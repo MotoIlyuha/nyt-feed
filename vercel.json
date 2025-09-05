@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+      {
+        "source": "/nyt/:year/:month.json",
+        "destination": "https://api.nytimes.com/svc/archive/v1/:year/:month.json"
+      }
+    ]
+  }
