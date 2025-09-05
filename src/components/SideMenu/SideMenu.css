@@ -1,0 +1,136 @@
+/**
+ * Стили для SideMenu компонента
+ * TODO: Скорректировать цвета и размеры согласно макету Figma
+ */
+
+.side-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-sidebar);
+  animation: fadeIn var(--transition-normal) ease-out;
+}
+
+.side-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: var(--sidebar-width);
+  max-width: 85vw;
+  background: var(--color-background);
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  animation: slideInFromLeft var(--transition-normal) ease-out;
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.side-menu__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  min-height: var(--header-height);
+}
+
+.side-menu__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.side-menu__close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.side-menu__close-button:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.side-menu__nav {
+  flex: 1;
+  padding: var(--spacing-md) 0;
+  overflow-y: auto;
+}
+
+.side-menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.side-menu__item {
+  margin: 0;
+}
+
+.side-menu__link {
+  display: block;
+  padding: var(--spacing-md);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-normal);
+  transition: background-color var(--transition-fast);
+  border-left: 3px solid transparent;
+}
+
+.side-menu__link:hover {
+  background-color: var(--color-surface-hover);
+  border-left-color: var(--color-primary);
+}
+
+.side-menu__link:active {
+  background-color: var(--color-border);
+}
+
+.side-menu__link.active {
+  background-color: var(--color-surface);
+  border-left-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.side-menu__footer {
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+.side-menu__version {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0;
+}
+
+/* Адаптивность для маленьких экранов */
+@media (max-width: 480px) {
+  .side-menu {
+    width: calc(100vw - 60px);
+  }
+}
