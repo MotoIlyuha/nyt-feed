@@ -6,7 +6,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { NYTimesResponse, FetchArticlesParams, NormalizedArticle } from '../types/nytimes';
 
 // API ключ для NYT
-const NYT_API_KEY = 'rJ7XaUF0IQZG7UYu0jp85Mdqpeu5MnbP';
+const NYT_API_KEY = 'nQ4Zm6ufztAi3r6qbfi7UlQWZz7ZpN4o';
 
 // Функция для нормализации URL изображений
 const normalizeImageUrl = (url: string): string => {
@@ -54,42 +54,33 @@ export const nytimesApi = createApi({
         return response.response.docs
           .map(normalizeArticle)
           .filter((article) => article.title && article.url) // Фильтруем статьи без заголовка или URL
-          .sort((a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()); // Сортируем по дате убывания
+          .sort((a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()) // Сортируем по дате убывания
+          .slice(0, 50); // Ограничиваем количество статей для производительности
       },
       providesTags: (result, error, { year, month }) => [
         { type: 'Articles', id: `${year}-${month}` },
       ],
     }),
     
-    // Получение последних статей (для обновления каждые 30 секунд)
+    // Получение последних статей (используем 2024 год, так как API поддерживает только до 2019)
     getLatestArticles: builder.query<NormalizedArticle[], void>({
       query: () => {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth() + 1;
-        
+        // Используем последний доступный год (2019) и месяц (12)
         return {
-          url: `/${year}/${month}.json`,
+          url: '/2019/12.json',
           params: {
             'api-key': NYT_API_KEY,
           },
         };
       },
       transformResponse: (response: NYTimesResponse): NormalizedArticle[] => {
-        const today = new Date().toISOString().split('T')[0];
-        
         return response.response.docs
           .map(normalizeArticle)
-          .filter((article) => {
-            // Фильтруем только сегодняшние статьи
-            const articleDate = article.publishedDate.split('T')[0];
-            return articleDate === today && article.title && article.url;
-          })
-          .sort((a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime());
+          .filter((article) => article.title && article.url)
+          .sort((a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime())
+          .slice(0, 10); // Берем только первые 10 статей
       },
       providesTags: ['Articles'],
-      // Поллинг каждые 30 секунд для получения свежих новостей
-      pollingInterval: 30000,
     }),
   }),
 });

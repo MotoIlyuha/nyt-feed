@@ -2,7 +2,7 @@
  * Виртуализированный компонент списка новостей
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useCallback, useRef } from 'react';
 import { VariableSizeList as List } from 'react-window';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../store';
@@ -81,37 +81,39 @@ export const NewsList: React.FC = () => {
     currentYear,
     currentMonth 
   } = useSelector((state: RootState) => state.news);
+  
+  const hasInitialized = useRef(false);
 
   // Запрос для получения архива (начальная загрузка)
   const { data: initialArticles, error: initialError, isLoading: isInitialLoading } = 
     useGetArchiveArticlesQuery({ year: currentYear, month: currentMonth });
 
-  // Запрос для получения свежих новостей (каждые 30 секунд)
-  const { data: latestArticles } = useGetLatestArticlesQuery();
+  // Запрос для получения свежих новостей (отключен для стабильности)
+  // const { data: latestArticles } = useGetLatestArticlesQuery();
 
   // Ленивый запрос для infinite scroll
   const [fetchMoreArticles] = useLazyGetArchiveArticlesQuery();
 
   // Обработка начальной загрузки
   useEffect(() => {
-    if (initialArticles && !loading) {
+    if (initialArticles && !loading && initialArticles.length > 0 && !hasInitialized.current) {
       dispatch(setArticles(initialArticles));
+      hasInitialized.current = true;
     }
-  }, [initialArticles, dispatch, loading]);
+  }, [initialArticles, dispatch]);
 
-  // Обработка свежих новостей
-  useEffect(() => {
-    if (latestArticles && latestArticles.length > 0) {
-      dispatch(prependArticles(latestArticles));
-    }
-  }, [latestArticles, dispatch]);
+  // Обработка свежих новостей (отключено для стабильности)
+  // useEffect(() => {
+  //   if (latestArticles && latestArticles.length > 0) {
+  //     dispatch(prependArticles(latestArticles));
+  //   }
+  // }, [latestArticles]);
 
   // Загрузка дополнительных статей для infinite scroll
-  const loadMoreArticles = async () => {
+  const loadMoreArticles = useCallback(async () => {
     if (loadingMore) return;
     
     dispatch(setLoadingMore(true));
-    dispatch(goToPreviousMonth());
     
     try {
       // Получаем предыдущий месяц
@@ -123,15 +125,27 @@ export const NewsList: React.FC = () => {
         nextYear -= 1;
       }
       
+      // Проверяем, что не запрашиваем неподдерживаемые годы
+      if (nextYear > 2019 || nextYear < 2019) {
+        console.warn('Достигнут лимит доступных данных (2019 год)');
+        dispatch(setLoadingMore(false));
+        return;
+      }
+      
       const result = await fetchMoreArticles({ year: nextYear, month: nextMonth });
       
-      if (result.data) {
+      if (result.data && result.data.length > 0) {
         dispatch(appendArticles(result.data));
+        dispatch(goToPreviousMonth());
+      } else {
+        console.warn('Нет данных для загрузки');
+        dispatch(setLoadingMore(false));
       }
     } catch (error) {
       console.error('Ошибка загрузки дополнительных статей:', error);
+      dispatch(setLoadingMore(false));
     }
-  };
+  }, [loadingMore, currentYear, currentMonth, dispatch]);
 
   // Подготовка данных для виртуализированного списка
   const listData = useMemo(() => {
@@ -167,7 +181,7 @@ export const NewsList: React.FC = () => {
 
   // Настройка infinite scroll
   const infiniteScrollRef = useInfiniteScroll({
-    hasMore,
+    hasMore: hasMore && currentMonth > 1, // Останавливаем на январе 2019
     loading: loadingMore,
     onLoadMore: loadMoreArticles,
   });

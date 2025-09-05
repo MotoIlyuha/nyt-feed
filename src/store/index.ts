@@ -13,7 +13,13 @@ export const store = configureStore({
     [nytimesApi.reducerPath]: nytimesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(nytimesApi.middleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Отключаем проверку сериализуемости для больших данных
+        ignoredActions: ['nytimesApi/executeQuery/pending', 'nytimesApi/executeQuery/fulfilled'],
+        ignoredPaths: ['nytimesApi.queries', 'nytimesApi.mutations'],
+      },
+    }).concat(nytimesApi.middleware),
 });
 
 // Включаем автоматический рефетчинг при фокусе/реконнекте

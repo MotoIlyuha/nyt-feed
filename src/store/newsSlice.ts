@@ -27,8 +27,8 @@ const initialState: NewsState = {
   loadingMore: false,
   hasMore: true,
   error: null,
-  currentYear: new Date().getFullYear(),
-  currentMonth: new Date().getMonth() + 1,
+  currentYear: 2019, // Используем 2019 - последний поддерживаемый год
+  currentMonth: 12, // Декабрь 2019
   sideMenuOpen: false,
 };
 
@@ -80,6 +80,15 @@ const newsSlice = createSlice({
         state.articleOrder.push(article.id);
       });
       
+      // Ограничиваем общее количество статей для производительности
+      if (state.articleOrder.length > 200) {
+        const articlesToRemove = state.articleOrder.slice(0, state.articleOrder.length - 200);
+        articlesToRemove.forEach(id => {
+          delete state.articles[id];
+        });
+        state.articleOrder = state.articleOrder.slice(-200);
+      }
+      
       // Перегруппируем по датам
       const allArticles = state.articleOrder.map(id => state.articles[id]);
       state.articlesByDate = groupArticlesByDate(allArticles);
@@ -106,6 +115,15 @@ const newsSlice = createSlice({
       // Добавляем ID в начало массива
       const newIds = uniqueNewArticles.map(article => article.id);
       state.articleOrder = [...newIds, ...state.articleOrder];
+      
+      // Ограничиваем общее количество статей для производительности
+      if (state.articleOrder.length > 200) {
+        const articlesToRemove = state.articleOrder.slice(200);
+        articlesToRemove.forEach(id => {
+          delete state.articles[id];
+        });
+        state.articleOrder = state.articleOrder.slice(0, 200);
+      }
       
       // Перегруппируем по датам
       const allArticles = state.articleOrder.map(id => state.articles[id]);
