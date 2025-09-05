@@ -57,7 +57,7 @@ export const nytimesApi = createApi({
           .sort((a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()) // Сортируем по дате убывания
           .slice(0, 50); // Ограничиваем количество статей для производительности
       },
-      providesTags: (result, error, { year, month }) => [
+      providesTags: (_result, _error, { year, month }) => [
         { type: 'Articles', id: `${year}-${month}` },
       ],
     }),
