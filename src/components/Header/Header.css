@@ -1,0 +1,78 @@
+/**
+ * Стили для Header компонента
+ * TODO: Скорректировать цвета и размеры согласно макету Figma
+ */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: var(--color-background);
+  border-bottom: 1px solid var(--color-border);
+  z-index: var(--z-header);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.header__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 var(--spacing-md);
+  max-width: 100%;
+}
+
+.header__menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.header__menu-button:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.header__menu-button:active {
+  background-color: var(--color-border);
+  transform: scale(0.96);
+}
+
+.header__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  text-align: center;
+  flex: 1;
+  margin: 0 var(--spacing-md);
+  /* TODO: Заменить на стили логотипа из макета */
+}
+
+.header__actions {
+  width: 44px; /* Для балансировки с кнопкой меню */
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .header__content {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .header__title {
+    font-size: var(--font-size-md);
+    margin: 0 var(--spacing-sm);
+  }
+}
