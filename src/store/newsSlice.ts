@@ -5,6 +5,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import type { NewsState, NormalizedArticle, ArticlesByDate } from '../types/nytimes';
+import type { Language } from '../i18n';
+import { getCurrentLanguage } from '../i18n';
 
 // Функция для группировки статей по датам
 const groupArticlesByDate = (articles: NormalizedArticle[]): ArticlesByDate => {
@@ -30,6 +32,7 @@ const initialState: NewsState = {
   currentYear: 2019, // Используем 2019 - последний поддерживаемый год
   currentMonth: 12, // Декабрь 2019
   sideMenuOpen: false,
+  language: getCurrentLanguage(), // Получаем язык из localStorage или по умолчанию 'en'
 };
 
 const newsSlice = createSlice({
@@ -149,6 +152,11 @@ const newsSlice = createSlice({
       state.sideMenuOpen = false;
     },
     
+    // Управление языком
+    setLanguage: (state, action: PayloadAction<Language>) => {
+      state.language = action.payload;
+    },
+    
     // Сброс состояния
     resetNews: (state) => {
       return initialState;
@@ -166,6 +174,7 @@ export const {
   goToPreviousMonth,
   toggleSideMenu,
   closeSideMenu,
+  setLanguage,
   resetNews,
 } = newsSlice.actions;
 

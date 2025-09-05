@@ -8,17 +8,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../store';
 import { 
   useGetArchiveArticlesQuery, 
-  useGetLatestArticlesQuery,
   useLazyGetArchiveArticlesQuery 
 } from '../../services/nytimesApi';
 import { 
   setArticles, 
   appendArticles, 
-  prependArticles,
   setLoadingMore,
   goToPreviousMonth
 } from '../../store/newsSlice';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
+import { useTranslation } from '../../hooks/useTranslation';
 import { NewsCard } from '../NewsCard';
 import { DateSeparator } from '../DateSeparator';
 import { SpinnerBlue } from '../SpinnerBlue';
@@ -41,6 +40,7 @@ const ListItem: React.FC<{
   data: ListItemData[];
 }> = ({ index, style, data }) => {
   const item = data[index];
+  const t = useTranslation();
   
   if (!item) {
     return <div style={style}></div>;
@@ -57,11 +57,11 @@ const ListItem: React.FC<{
       {item.type === 'skeleton' && (
         <NewsCard article={{
           id: `skeleton-${index}`,
-          title: 'Загрузка...',
+          title: t.common.loading,
           url: '',
           publishedDate: new Date().toISOString(),
-          source: 'Загрузка...',
-          snippet: 'Загружается содержимое статьи...',
+          source: t.common.loading,
+          snippet: t.newsList.loading,
           wordCount: 0,
         }} />
       )}
@@ -71,6 +71,7 @@ const ListItem: React.FC<{
 
 export const NewsList: React.FC = () => {
   const dispatch = useDispatch();
+  const t = useTranslation();
   const { 
     articles, 
     articleOrder, 
@@ -198,12 +199,12 @@ export const NewsList: React.FC = () => {
   if (initialError) {
     return (
       <div className="news-list__error">
-        <p>Произошла ошибка при загрузке новостей</p>
+        <p>{t.newsList.loadingError}</p>
         <button 
           onClick={() => window.location.reload()}
           className="news-list__retry-button"
         >
-          Попробовать снова
+          {t.newsList.retryButton}
         </button>
       </div>
     );
@@ -234,7 +235,7 @@ export const NewsList: React.FC = () => {
         
         {!hasMore && articleOrder.length > 0 && (
           <div className="news-list__end-message">
-            <p>Вы достигли начала архива новостей</p>
+            <p>{t.newsList.endOfArchive}</p>
           </div>
         )}
       </div>

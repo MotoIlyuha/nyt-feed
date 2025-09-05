@@ -126,6 +126,8 @@ export interface NewsState {
   currentMonth: number;
   // Сайдбар
   sideMenuOpen: boolean;
+  // Язык интерфейса
+  language: 'en' | 'ru';
 }
 
 // Параметры запроса для API

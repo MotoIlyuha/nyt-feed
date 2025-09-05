@@ -7,6 +7,9 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { NormalizedArticle } from '../../types/nytimes';
+import { useTranslation } from '../../hooks/useTranslation';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../store';
 import './NewsCard.css';
 
 // Настройка dayjs
@@ -19,6 +22,14 @@ interface NewsCardProps {
 }
 
 export const NewsCard: React.FC<NewsCardProps> = ({ article, onClick }) => {
+  const t = useTranslation();
+  const currentLanguage = useSelector((state: RootState) => state.news.language);
+  
+  // Устанавливаем локаль dayjs в зависимости от выбранного языка
+  React.useEffect(() => {
+    dayjs.locale(currentLanguage === 'ru' ? 'ru' : 'en');
+  }, [currentLanguage]);
+
   const handleClick = () => {
     if (onClick) {
       onClick();
@@ -46,7 +57,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ article, onClick }) => {
       onKeyDown={handleKeyDown}
       tabIndex={0}
       role="button"
-      aria-label={`Читать статью: ${article.title}`}
+      aria-label={`${t.newsCard.readArticle}: ${article.title}`}
     >
       <div className="news-card__content">
         <div className="news-card__text">
@@ -76,7 +87,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ article, onClick }) => {
               <>
                 <span className="news-card__separator">•</span>
                 <span className="news-card__word-count">
-                  {article.wordCount} слов
+                  {article.wordCount} {t.newsCard.words}
                 </span>
               </>
             )}

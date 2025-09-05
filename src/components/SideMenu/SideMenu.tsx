@@ -5,12 +5,17 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../store';
-import { closeSideMenu } from '../../store/newsSlice';
+import { closeSideMenu, setLanguage } from '../../store/newsSlice';
+import { useTranslation } from '../../hooks/useTranslation';
+import { setCurrentLanguage } from '../../i18n';
+import type { Language } from '../../i18n';
 import './SideMenu.css';
 
 export const SideMenu: React.FC = () => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state: RootState) => state.news.sideMenuOpen);
+  const currentLanguage = useSelector((state: RootState) => state.news.language);
+  const t = useTranslation();
 
   // Закрытие меню по клавише Escape
   useEffect(() => {
@@ -41,6 +46,11 @@ export const SideMenu: React.FC = () => {
     event.stopPropagation();
   };
 
+  const handleLanguageChange = (language: Language) => {
+    dispatch(setLanguage(language));
+    setCurrentLanguage(language);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -48,15 +58,13 @@ export const SideMenu: React.FC = () => {
       <div className="side-menu" onClick={handleMenuClick}>
         <div className="side-menu__header">
           <h2 className="side-menu__title">
-            {/* TODO: Заменить на заголовок из макета */}
-            Меню
+            {t.sideMenu.title}
           </h2>
           <button
             className="side-menu__close-button"
             onClick={handleOverlayClick}
-            aria-label="Закрыть меню"
+            aria-label={t.sideMenu.closeButton}
           >
-            {/* TODO: Заменить на иконку закрытия из макета */}
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
                 d="M18 6L6 18M6 6l12 12"
@@ -69,40 +77,65 @@ export const SideMenu: React.FC = () => {
         </div>
         
         <nav className="side-menu__nav">
-          {/* TODO: Добавить пункты меню из макета Figma */}
           <ul className="side-menu__list">
             <li className="side-menu__item">
               <a href="#" className="side-menu__link">
-                Главная
+                {t.sideMenu.menuItems.home}
               </a>
             </li>
             <li className="side-menu__item">
               <a href="#" className="side-menu__link">
-                Политика
+                {t.sideMenu.menuItems.politics}
               </a>
             </li>
             <li className="side-menu__item">
               <a href="#" className="side-menu__link">
-                Технологии
+                {t.sideMenu.menuItems.technology}
               </a>
             </li>
             <li className="side-menu__item">
               <a href="#" className="side-menu__link">
-                Спорт
+                {t.sideMenu.menuItems.sports}
               </a>
             </li>
             <li className="side-menu__item">
               <a href="#" className="side-menu__link">
-                Культура
+                {t.sideMenu.menuItems.culture}
               </a>
             </li>
           </ul>
+          
+          {/* Переключатель языка */}
+          <div className="side-menu__language-section">
+            <h3 className="side-menu__language-title">
+              {t.sideMenu.language}
+            </h3>
+            <div className="side-menu__language-selector">
+              <button
+                className={`side-menu__language-button ${
+                  currentLanguage === 'en' ? 'side-menu__language-button--active' : ''
+                }`}
+                onClick={() => handleLanguageChange('en')}
+                aria-label={`${t.sideMenu.languageSelector} - English`}
+              >
+                🇺🇸 English
+              </button>
+              <button
+                className={`side-menu__language-button ${
+                  currentLanguage === 'ru' ? 'side-menu__language-button--active' : ''
+                }`}
+                onClick={() => handleLanguageChange('ru')}
+                aria-label={`${t.sideMenu.languageSelector} - Русский`}
+              >
+                🇷🇺 Русский
+              </button>
+            </div>
+          </div>
         </nav>
         
         <div className="side-menu__footer">
-          {/* TODO: Добавить футер меню из макета */}
           <p className="side-menu__version">
-            Версия 1.0.0
+            {t.sideMenu.version}
           </p>
         </div>
       </div>

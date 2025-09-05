@@ -5,10 +5,12 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleSideMenu } from '../../store/newsSlice';
+import { useTranslation } from '../../hooks/useTranslation';
 import './Header.css';
 
 export const Header: React.FC = () => {
   const dispatch = useDispatch();
+  const t = useTranslation();
 
   const handleMenuClick = () => {
     dispatch(toggleSideMenu());
@@ -20,9 +22,8 @@ export const Header: React.FC = () => {
         <button
           className="header__menu-button"
           onClick={handleMenuClick}
-          aria-label="Открыть меню"
+          aria-label={t.header.menuButton}
         >
-          {/* TODO: Заменить на иконку из макета Figma */}
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path
               d="M3 12h18M3 6h18M3 18h18"
@@ -34,8 +35,7 @@ export const Header: React.FC = () => {
         </button>
         
         <h1 className="header__title">
-          {/* TODO: Заменить на логотип/название из макета */}
-          Новости
+          {t.header.title}
         </h1>
         
         {/* Место для дополнительных элементов (поиск, фильтры и т.д.) */}
