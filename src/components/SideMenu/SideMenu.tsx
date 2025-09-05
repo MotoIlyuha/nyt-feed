@@ -75,17 +75,22 @@ export const SideMenu: React.FC = () => {
             </svg>
           </button>
         </div>
-        
+
         <nav className="side-menu__nav">
           <ul className="side-menu__list">
             <li className="side-menu__item">
               <a href="#" className="side-menu__link">
-                {t.sideMenu.menuItems.home}
+                {t.sideMenu.menuItems.science}
               </a>
             </li>
             <li className="side-menu__item">
               <a href="#" className="side-menu__link">
-                {t.sideMenu.menuItems.politics}
+                {t.sideMenu.menuItems.general}
+              </a>
+            </li>
+            <li className="side-menu__item">
+              <a href="#" className="side-menu__link">
+                {t.sideMenu.menuItems.entertainment}
               </a>
             </li>
             <li className="side-menu__item">
@@ -95,16 +100,21 @@ export const SideMenu: React.FC = () => {
             </li>
             <li className="side-menu__item">
               <a href="#" className="side-menu__link">
-                {t.sideMenu.menuItems.sports}
+                {t.sideMenu.menuItems.business}
               </a>
             </li>
             <li className="side-menu__item">
               <a href="#" className="side-menu__link">
-                {t.sideMenu.menuItems.culture}
+                {t.sideMenu.menuItems.health}
+              </a>
+            </li>
+            <li className="side-menu__item">
+              <a href="#" className="side-menu__link">
+                {t.sideMenu.menuItems.sports}
               </a>
             </li>
           </ul>
-          
+
           {/* Переключатель языка */}
           <div className="side-menu__language-section">
             <h3 className="side-menu__language-title">
@@ -132,7 +142,7 @@ export const SideMenu: React.FC = () => {
             </div>
           </div>
         </nav>
-        
+
         <div className="side-menu__footer">
           <p className="side-menu__version">
             {t.sideMenu.version}

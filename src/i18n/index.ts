@@ -18,9 +18,13 @@ export interface Translations {
     language: string;
     languageSelector: string;
     menuItems: {
+      science: string;
+      general: string;
+      entertainment: string;
       home: string;
-      politics: string;
       technology: string;
+      business: string;
+      health: string;
       sports: string;
       culture: string;
     };
@@ -57,7 +61,7 @@ export interface Translations {
 const translations: Record<Language, Translations> = {
   en: {
     header: {
-      title: 'News',
+      title: 'BESIDER',
       menuButton: 'Open menu',
     },
     sideMenu: {
@@ -66,11 +70,15 @@ const translations: Record<Language, Translations> = {
       language: 'Language',
       languageSelector: 'Select language',
       menuItems: {
-        home: 'Home',
-        politics: 'Politics',
+        science: 'Science',
+        general: 'General',
+        entertainment: 'Entertainment',
         technology: 'Technology',
+        business: 'Business',
+        health: 'Health',
         sports: 'Sports',
         culture: 'Culture',
+        home: 'Home',
       },
       version: 'Version 1.0.0',
     },
@@ -104,11 +112,15 @@ const translations: Record<Language, Translations> = {
       language: 'Язык',
       languageSelector: 'Выберите язык',
       menuItems: {
-        home: 'Главная',
-        politics: 'Политика',
+        science: 'Наука',
+        general: 'Общее',
+        entertainment: 'Развлечения',
         technology: 'Технологии',
+        business: 'Бизнес',
+        health: 'Здоровье',
         sports: 'Спорт',
         culture: 'Культура',
+        home: 'Главная',
       },
       version: 'Версия 1.0.0',
     },
@@ -132,6 +144,7 @@ const translations: Record<Language, Translations> = {
     },
   },
 };
+
 
 // Функция для получения перевода
 export const getTranslation = (language: Language): Translations => {
