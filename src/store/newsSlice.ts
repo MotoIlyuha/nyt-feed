@@ -158,7 +158,7 @@ const newsSlice = createSlice({
     },
     
     // Сброс состояния
-    resetNews: (state) => {
+    resetNews: (_state) => {
       return initialState;
     },
   },
