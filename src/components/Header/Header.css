@@ -14,11 +14,6 @@
   z-index: var(--z-header);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  font-family: Lato, sans-serif;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-weight: var(--font-weight-semibold);
-  font-size: 24px;
 }
 
 .header__content {
@@ -55,13 +50,16 @@
 }
 
 .header__title {
-  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
   text-align: center;
   flex: 1;
   margin: 0 var(--spacing-md);
-  /* TODO: Заменить на стили логотипа из макета */
+  font-family: Lato, sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: var(--font-weight-semibold);
+  font-size: 24px!important;
 }
 
 .header__actions {

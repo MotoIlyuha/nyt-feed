@@ -1,20 +1,14 @@
 /**
- * Компонент карточки новости
+ * Компактная карточка новости под макет из скриншота
  */
 
 import React from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import type { NormalizedArticle } from '../../types/nytimes';
-import { useTranslation } from '../../hooks/useTranslation';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store';
 import './NewsCard.css';
-
-// Настройка dayjs
-dayjs.extend(relativeTime);
-dayjs.locale('ru');
 
 interface NewsCardProps {
   article: NormalizedArticle;
@@ -22,21 +16,11 @@ interface NewsCardProps {
 }
 
 export const NewsCard: React.FC<NewsCardProps> = ({ article, onClick }) => {
-  const t = useTranslation();
   const currentLanguage = useSelector((state: RootState) => state.news.language);
-  
-  // Устанавливаем локаль dayjs в зависимости от выбранного языка
-  React.useEffect(() => {
-    dayjs.locale(currentLanguage === 'ru' ? 'ru' : 'en');
-  }, [currentLanguage]);
 
   const handleClick = () => {
-    if (onClick) {
-      onClick();
-    } else {
-      // Открываем оригинальную статью на NYT
-      window.open(article.url, '_blank', 'noopener,noreferrer');
-    }
+    if (onClick) return onClick();
+    window.open(article.url, '_blank', 'noopener,noreferrer');
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -46,82 +30,52 @@ export const NewsCard: React.FC<NewsCardProps> = ({ article, onClick }) => {
     }
   };
 
-  // Форматирование времени
-  const timeAgo = dayjs(article.publishedDate).fromNow();
-  const fullDate = dayjs(article.publishedDate).format('DD.MM.YYYY, HH:mm');
+  // Абсолютная дата как в макете: "Feb 26, 2023, 16.32 PM"
+  // Используем английскую локаль для месяца, как на скриншоте.
+  const publishedAbsolute = dayjs(article.publishedDate)
+    .locale('en')
+    .format('MMM D, YYYY, HH.mm A');
 
   return (
     <article
-      className="news-card"
+      className="news-card news-card--compact"
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       tabIndex={0}
       role="button"
-      aria-label={`${t.newsCard.readArticle}: ${article.title}`}
+      aria-label={`Open article: ${article.title}`}
     >
       <div className="news-card__content">
-        <div className="news-card__text">
-          <h3 className="news-card__title">
-            {article.title}
-          </h3>
-          
-          {article.snippet && (
-            <p className="news-card__snippet">
-              {article.snippet}
-            </p>
-          )}
-          
-          <div className="news-card__meta">
-            <span className="news-card__source">
-              {article.source}
-            </span>
-            <span className="news-card__separator">•</span>
-            <time 
-              className="news-card__time"
-              dateTime={article.publishedDate}
-              title={fullDate}
-            >
-              {timeAgo}
-            </time>
-            {article.wordCount > 0 && (
-              <>
-                <span className="news-card__separator">•</span>
-                <span className="news-card__word-count">
-                  {article.wordCount} {t.newsCard.words}
-                </span>
-              </>
-            )}
-          </div>
-        </div>
-        
         {article.imageUrl && (
-          <div className="news-card__image-container">
+          <div className="news-card__image-container news-card__image-container--compact">
             <img
               className="news-card__image"
               src={article.imageUrl}
               alt=""
               loading="lazy"
               onError={(e) => {
-                // Скрываем изображение при ошибке загрузки
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
               }}
             />
           </div>
         )}
-      </div>
-      
-      {/* Индикатор внешней ссылки */}
-      <div className="news-card__link-indicator">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+
+        <div className="news-card__text">
+          <div className="news-card__brand">{article.source}</div>
+
+          <h3 className="news-card__title news-card__title--compact">
+            {article.title}
+          </h3>
+
+          <time
+            className="news-card__date"
+            dateTime={article.publishedDate}
+            title={publishedAbsolute}
+          >
+            {publishedAbsolute}
+          </time>
+        </div>
       </div>
     </article>
   );
